@@ -1,0 +1,542 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>STO 브랜드 2026년 4월 경영 보고서</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body { font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; font-size:9px; color:#333; background:#f7fafc; line-height:1.3; }
+    .nav-bar { position:sticky; top:0; z-index:100; background:#2d3748; padding:6px 12px; display:flex; align-items:center; gap:6px; max-width:210mm; margin:0 auto; box-shadow:0 2px 8px rgba(0,0,0,.15); }
+    .nav-brand { color:white; font-weight:bold; font-size:10px; margin-right:8px; }
+    .nav-bar button { color:white;border:none;cursor:pointer;padding:3px 7px;border-radius:3px;font-size:7.5px;background:rgba(255,255,255,.15);font-family:'Malgun Gothic','Apple SD Gothic Neo',sans-serif; }
+    .nav-bar button:hover { background:rgba(255,255,255,.3); }
+    .wrap { max-width:210mm; margin:0 auto; background:#fff; padding:12mm 11mm 18mm; min-height:100vh; box-shadow:0 0 20px rgba(0,0,0,.08); }
+
+    .header { border-bottom:2.5px solid #2d3748; padding-bottom:8px; margin-bottom:12px; display:flex; justify-content:space-between; align-items:flex-end; }
+    .header-left h1 { font-size:15px; color:#2d3748; }
+    .header-left p { font-size:7.5px; color:#666; margin-top:2px; }
+    .header-right { text-align:right; }
+    .big-num { font-size:20px; font-weight:bold; color:#2d3748; }
+    .big-num span { font-size:9px; font-weight:normal; }
+    .sub { font-size:8px; color:#666; }
+
+    .page-title { font-size:11px; font-weight:bold; color:#2d3748; border-left:3.5px solid #2d3748; padding-left:8px; margin:14px 0 7px; }
+    .sub-title { font-size:10px;font-weight:bold;color:#2d3748;border-left:3px solid #2d3748;padding-left:7px;margin:8px 0 6px; }
+    .divider { border:none; border-top:1px dashed #cbd5e0; margin:12px 0; }
+    .container { display:flex; gap:10px; }
+    .left,.right { width:50%; }
+
+    table { width:100%; border-collapse:collapse; font-size:7.5px; }
+    th { background:#f0f4f8; padding:2.5px 3px; text-align:left; font-weight:bold; border-bottom:1px solid #cbd5e0; color:#2d3748; }
+    td { padding:2.5px 3px; border-bottom:1px solid #edf2f7; }
+    .num { text-align:right; }
+
+    .mega th { background:#f0f4f8; padding:2.5px 3px; text-align:left; font-weight:bold; border-bottom:1px solid #cbd5e0; color:#2d3748; font-size:7.5px; }
+    .mega td { padding:2.5px 3px; border-bottom:1px solid #edf2f7; font-size:7.5px; }
+    .mega .grp { border-right:2px solid #cbd5e0; }
+    .mega .sec-hd { font-weight:bold; font-size:8px; color:#2d3748; background:#f7fafc; padding:3px 3px 2px; border-bottom:1.5px solid #2d3748; }
+
+    .badge-up   { background:#c6f6d5; color:#276749; padding:1px 4px; border-radius:2px; font-size:7px; font-weight:bold; }
+    .badge-down { background:#fed7d7; color:#c53030; padding:1px 4px; border-radius:2px; font-size:7px; font-weight:bold; }
+    .badge-warn { background:#fefcbf; color:#975a16; padding:1px 4px; border-radius:2px; font-size:7px; font-weight:bold; }
+    .badge-neutral { background:#e2e8f0; color:#4a5568; padding:1px 4px; border-radius:2px; font-size:7px; font-weight:bold; }
+    .ytd-tag { background:#e2e8f0; color:#4a5568; padding:1px 4px; border-radius:2px; font-size:6.5px; font-weight:bold; }
+
+    .kpi-grid  { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; margin-bottom:8px; }
+    .kpi-grid-4{ display:grid; grid-template-columns:repeat(4,1fr); gap:4px; margin-bottom:8px; }
+    .kpi-box { background:#f7fafc; border:1px solid #e2e8f0; border-radius:4px; padding:5px 4px; text-align:center; }
+    .kpi-box.highlight { background:#ebf8ff; border-color:#bee3f8; }
+    .kpi-box.warning { background:#fffaf0; border-color:#fbd38d; }
+    .kpi-label { font-size:6.5px; color:#718096; margin-bottom:1px; }
+    .kpi-value { font-size:12px; font-weight:bold; color:#2d3748; }
+    .kpi-change { font-size:6.5px; margin-top:1px; }
+    .up   { color:#276749; }
+    .down { color:#c53030; }
+
+    /* season cards */
+    .season-grid { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; margin-bottom:10px; }
+    .season-card { background:#fff; border:1px solid #e2e8f0; border-radius:4px; overflow:hidden; }
+    .season-head { background:#2d3748; color:#fff; font-size:10px; font-weight:bold; padding:4px; text-align:center; letter-spacing:0.3px; }
+    .season-body { padding:6px 7px; }
+    .season-lbl { font-size:6.5px; color:#718096; margin-bottom:1px; }
+    .season-val { font-size:13px; font-weight:bold; color:#2d3748; line-height:1.1; }
+    .season-yoy { font-size:7px; font-weight:bold; margin-top:2px; }
+    .season-sep { border-top:1px dashed #e2e8f0; margin:5px 0; }
+
+    .box { border-radius:4px; padding:5px 7px; margin-bottom:5px; }
+    .box-red    { background:#fff5f5; border-left:3px solid #c53030; }
+    .box-yellow { background:#fffff0; border-left:3px solid #d69e2e; }
+    .box-green  { background:#f0fff4; border-left:3px solid #38a169; }
+    .box-blue   { background:#ebf8ff; border-left:3px solid #3182ce; }
+    .box-dark   { background:#2d3748; color:white; border-radius:4px; padding:7px; }
+    .box-title  { font-weight:bold; margin-bottom:3px; font-size:8px; }
+    .box-title.red   { color:#c53030; }
+    .box-title.green { color:#276749; }
+    .box-title.blue  { color:#2b6cb0; }
+    ul { padding-left:11px; margin:0; }
+    li { margin-bottom:1.5px; line-height:1.4; }
+    .loss { color:#c53030; font-weight:bold; }
+
+    .chart-wrap  { background:#fafafa; border:1px solid #e2e8f0; border-radius:5px; padding:8px 8px 5px; }
+    .chart-title { font-size:7.5px; font-weight:bold; color:#4a5568; margin-bottom:5px; }
+
+    .footer { text-align:center; font-size:7px; color:#a0aec0; margin-top:14px; padding-top:6px; border-top:1px solid #e2e8f0; }
+    @media print { body { background:white; } .wrap { box-shadow:none; } .nav-bar { display:none; } }
+  </style>
+</head>
+<body>
+
+<div class="nav-bar">
+  <span class="nav-brand">🏃 STO</span>
+  <button onclick="nav('sec1')">1. KPI 요약</button>
+  <button onclick="nav('sec2')">2. 채널·아이템</button>
+  <button onclick="nav('sec3')">3. 손익·비용</button>
+  <button onclick="nav('sec4')">4. 재고·전략</button>
+  <button onclick="nav('sec5')">5. 당월 추세</button>
+</div>
+<script>function nav(id){document.getElementById(id).scrollIntoView({behavior:'smooth',block:'start'});}</script>
+
+<div class="wrap">
+
+  <div class="header">
+    <div class="header-left">
+      <h1>STO 브랜드 2026년 4월 경영 보고서</h1>
+      <p>F&amp;F · 보고기간: 2026년 4월 당월 / YTD(1~4월 누적) · 단위: K USD · 비교기준: 전년동월(2025년 4월) YoY</p>
+    </div>
+    <div class="header-right">
+      <div class="big-num">1,369 <span>K USD (4월 당월 실판매출)</span></div>
+      <div class="sub">
+        당월 YoY <span class="badge-down" style="font-size:8px;">84%</span>&nbsp;
+        직접이익 383K <span class="badge-down" style="font-size:8px;">YoY 76%</span>&nbsp;
+        영업비 703K <span class="badge-down" style="font-size:8px;">YoY 124%▲</span>&nbsp;
+        영업이익 <span class="badge-down" style="font-size:8px;">-320K 적자</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-title" id="sec1">1. KPI 요약 (당월 vs 전년동월)</div>
+  <div class="kpi-grid">
+    <div class="kpi-box">
+      <div class="kpi-label">실판매출 당월</div>
+      <div class="kpi-value" style="font-size:11px;">1,369K</div>
+      <div class="kpi-change down">YoY 84% (전년 1,630K)</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">직접이익 당월</div>
+      <div class="kpi-value" style="font-size:11px;">383K</div>
+      <div class="kpi-change down">YoY 76% (전년 504K)</div>
+    </div>
+    <div class="kpi-box">
+      <div class="kpi-label">기말재고</div>
+      <div class="kpi-value" style="font-size:11px;">$32,237K</div>
+      <div class="kpi-change down">전년 $32,423K · YoY 99%</div>
+    </div>
+    <div class="kpi-box warning">
+      <div class="kpi-label">할인율 당월</div>
+      <div class="kpi-value" style="font-size:11px;">43.2%</div>
+      <div class="kpi-change down">YoY +6.4%p ▲ (악화)</div>
+    </div>
+    <div class="kpi-box warning">
+      <div class="kpi-label">영업비 당월</div>
+      <div class="kpi-value" style="font-size:11px;">703K</div>
+      <div class="kpi-change down">YoY 124% ▲ (전년 567K)</div>
+    </div>
+  </div>
+
+  <div class="sub-title">📊 US EC 실판매출 및 할인율 (시즌별, K USD)</div>
+  <div class="season-grid">
+    <div class="season-card">
+      <div class="season-head">26SS</div>
+      <div class="season-body">
+        <div class="season-lbl">실판매출</div>
+        <div class="season-val">370K</div>
+        <div class="season-yoy down">전년대비 -387K</div>
+        <div class="season-sep"></div>
+        <div class="season-lbl">할인율</div>
+        <div class="season-val up">-0.7%</div>
+        <div class="season-yoy up">전년대비 -12.8%p</div>
+      </div>
+    </div>
+    <div class="season-card">
+      <div class="season-head">25FW</div>
+      <div class="season-body">
+        <div class="season-lbl">실판매출</div>
+        <div class="season-val">440K</div>
+        <div class="season-yoy up">전년대비 +66K</div>
+        <div class="season-sep"></div>
+        <div class="season-lbl">할인율</div>
+        <div class="season-val down">48.7%</div>
+        <div class="season-yoy up">전년대비 -2.6%p</div>
+      </div>
+    </div>
+    <div class="season-card">
+      <div class="season-head">SS과시즌</div>
+      <div class="season-body">
+        <div class="season-lbl">실판매출</div>
+        <div class="season-val">151K</div>
+        <div class="season-yoy up">전년대비 +86K</div>
+        <div class="season-sep"></div>
+        <div class="season-lbl">할인율</div>
+        <div class="season-val down">62.9%</div>
+        <div class="season-yoy down">전년대비 +3.3%p</div>
+      </div>
+    </div>
+    <div class="season-card">
+      <div class="season-head">FW과시즌</div>
+      <div class="season-body">
+        <div class="season-lbl">실판매출</div>
+        <div class="season-val">37K</div>
+        <div class="season-yoy up">전년대비 +32K</div>
+        <div class="season-sep"></div>
+        <div class="season-lbl">할인율</div>
+        <div class="season-val down">65.7%</div>
+        <div class="season-yoy up">전년대비 -0.3%p</div>
+      </div>
+    </div>
+    <div class="season-card">
+      <div class="season-head">CORE</div>
+      <div class="season-body">
+        <div class="season-lbl">실판매출</div>
+        <div class="season-val">24K</div>
+        <div class="season-yoy down">전년대비 -25K</div>
+        <div class="season-sep"></div>
+        <div class="season-lbl">할인율</div>
+        <div class="season-val up">-4.7%</div>
+        <div class="season-yoy up">전년대비 -10.5%p</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="left">
+      <div class="box box-green">
+        <div class="box-title green">✅ 4월 긍정 시그널 — 의미있는 변화 (AI 인사이트)</div>
+        <ul>
+          <li><b>라이선스가 본업 부진을 메우는 구조 형성</b> — MCCC 매출 13%가 직접이익의 47% 기여(182K/383K). 본업(EC+홀세일) 이익률은 13%대로 추락한 상태에서 수익 다각화가 손익을 지탱</li>
+          <li><b>시즌 전환 전략이 의도대로 작동</b> — 26SS는 정가 유지(-0.7%, YoY -12.8%p), 25SS는 적극 처분(YoY 234%). "신상 브랜드 가치 보호 + 이월 처분 가속" 패턴이 실제 데이터로 검증됨</li>
+          <li><b>CORE의 브랜드 파워 견고</b> — 할인율 -4.7%, 마진 81%. 베이직 아이템이 정가에 팔린다는 것은 향후 매출 안정성의 핵심 지표이자 가장 보존해야 할 자산</li>
+          <li><b>재고 회전 가속, 단 트레이드오프 존재</b> — 판매율 7.8%(+1.8%p)는 의미있으나, 25SS·25FW 적극 할인의 결과. 할인율 상승과 짝을 이루는 동전의 양면</li>
+          <li><b>US홀세일은 구조적으로 가장 건강</b> — 마진 45.9% 유지, YTD 이익률 44.9%로 안정. 매출 비중 확대 또는 신규 어카운트 발굴 우선순위 채널</li>
+        </ul>
+      </div>
+    </div>
+    <div class="right">
+      <div class="box box-red">
+        <div class="box-title red">⚠️ 4월 구조적 우려 — 숨은 시그널 (AI 인사이트)</div>
+        <ul>
+          <li><b>매출과 비용의 성장 방향이 어긋남</b> — 매출 YoY -16% / 영업비 YoY +24%로 격차 확대. 영업이익 -24K(3월) → -320K(4월)로 적자 폭 확대. 매출이 MoM +12% 회복했음에도 적자가 커진 점은 비용 구조 점검 필요성을 시사</li>
+          <li><b>영업비 증가의 핵심은 인센티브 시점차이</b> — 복리후생비 +177K 증가분 중 미국 인센티브 164K(전년은 5월 57K 지급). 5월 정상화 예상되나 <b>일회성 제거 후에도 실질 영업이익 약 -156K 적자</b> — 구조적 적자 존재</li>
+          <li><b>할인율 +6.4%p는 "평균의 함정"</b> — 26SS 정가(-0.7%) vs 25SS 62.9%, 과시즌 68.8%. 신상은 지키되 이월재고를 점점 더 깊게 깎는 중 → 25FW 재고 13,177K(전년 268%) 처분 압박 지속</li>
+          <li><b>EU EC 채널 수익성 붕괴</b> — 매출 YoY 34%, YTD 직접이익 적자전환(-8K), 이익률 -31.3%p. 한 분기로 추세 굳어짐 → 채널 철수·리포지셔닝·운영 모델 재설계 중 전략적 결단 필요</li>
+          <li><b>인당 베이스 비용 상승 추세</b> — 인원 27명 동일, 인당 영업비 26K(YoY +34%). 인센티브 일회성 외에도 보험·복지·식대·기타 전반 상승 → 인센티브 정상화 후에도 베이스 비용 점검 필수</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="page-title" id="sec2">2. 채널·아이템 분석 (당월 vs 전년동월)</div>
+
+  <table class="mega" style="width:100%;border-collapse:collapse;margin-bottom:6px;">
+    <tr>
+      <td colspan="5" class="sec-hd grp">📦 채널별 실판매출 (K USD)</td>
+      <td colspan="4" class="sec-hd grp">🏷️ 아이템별 실판매출 (K USD)</td>
+      <td colspan="4" class="sec-hd">📊 채널별 할인율</td>
+    </tr>
+    <tr>
+      <th>채널</th><th class="num">당월</th><th class="num">전년동월</th><th class="num">YoY</th><th class="num grp">비중</th>
+      <th>시즌</th><th class="num">당월</th><th class="num">YoY</th><th class="num grp">비중</th>
+      <th>채널</th><th class="num">당월</th><th class="num">YoY</th><th class="num">평가</th>
+    </tr>
+    <tr style="font-weight:bold;background:#f0f4f8;">
+      <td>합계</td><td class="num">1,369</td><td class="num" style="color:#718096;">1,630</td><td class="num"><span class="badge-down">84%</span></td><td class="num grp">100%</td>
+      <td>합계</td><td class="num">1,369</td><td class="num"><span class="badge-down">84%</span></td><td class="num grp">100%</td>
+      <td>전체</td><td class="num">43.2%</td><td class="num"><span class="badge-down">+6.4%p</span></td><td>악화</td>
+    </tr>
+    <tr>
+      <td>US EC</td><td class="num">1,022</td><td class="num" style="color:#718096;">1,262</td><td class="num"><span class="badge-down">81%</span></td><td class="num grp">75%</td>
+      <td>26SS</td><td class="num">510</td><td class="num"><span class="badge-down">50%</span></td><td class="num grp">43%</td>
+      <td>US EC</td><td class="num">40.8%</td><td class="num"><span class="badge-down">+9.0%p</span></td><td>악화▲</td>
+    </tr>
+    <tr style="background:#f0fff4;">
+      <td>라이선스/기타</td><td class="num">182</td><td class="num" style="color:#718096;">62</td><td class="num"><span class="badge-up">294%</span></td><td class="num grp">13%</td>
+      <td>25FW</td><td class="num">456</td><td class="num"><span class="badge-up">122%</span></td><td class="num grp">38%</td>
+      <td style="background:white;">US홀세일</td><td class="num" style="background:white;">59.0%</td><td class="num" style="background:white;"><span class="badge-down">+0.2%p</span></td><td style="background:white;">보합</td>
+    </tr>
+    <tr>
+      <td>US홀세일</td><td class="num">132</td><td class="num" style="color:#718096;">210</td><td class="num"><span class="badge-down">63%</span></td><td class="num grp">10%</td>
+      <td>25SS</td><td class="num">149</td><td class="num"><span class="badge-up">234%</span></td><td class="num grp">13%</td>
+      <td>EU EC</td><td class="num">19.2%</td><td class="num"><span class="badge-up">-0.5%p</span></td><td>유지</td>
+    </tr>
+    <tr>
+      <td>EU EC</td><td class="num">32</td><td class="num" style="color:#718096;">94</td><td class="num"><span class="badge-down">34%</span></td><td class="num grp">2%</td>
+      <td>FW과시즌</td><td class="num">38</td><td class="num"><span class="badge-up">139%</span></td><td class="num grp">3%</td>
+      <td colspan="4"></td>
+    </tr>
+    <tr>
+      <td colspan="5" class="grp"></td>
+      <td>CORE</td><td class="num">25</td><td class="num"><span class="badge-down">53%</span></td><td class="num grp">2%</td>
+      <td colspan="4"></td>
+    </tr>
+    <tr>
+      <td colspan="5" class="grp"></td>
+      <td>SS과시즌</td><td class="num">6</td><td class="num"><span class="badge-down">22%</span></td><td class="num grp">1%</td>
+      <td colspan="4"></td>
+    </tr>
+
+    <tr><td colspan="13" style="padding:3px 0;border:none;background:white;"></td></tr>
+
+    <tr>
+      <td colspan="5" class="sec-hd grp">💰 채널별 직접이익 (K USD)</td>
+      <td colspan="4" class="sec-hd grp">📉 시즌별 할인율</td>
+      <td colspan="4" class="sec-hd">📈 판매율 &amp; MU</td>
+    </tr>
+    <tr>
+      <th>채널</th><th class="num">당월</th><th class="num">이익률</th><th class="num grp" colspan="2">YoY</th>
+      <th>시즌</th><th class="num">당월</th><th class="num grp" colspan="2">YoY</th>
+      <th>아이템</th><th class="num">판매율</th><th class="num">전년</th><th class="num">YoY</th>
+    </tr>
+    <tr style="font-weight:bold;background:#f0f4f8;">
+      <td>합계</td><td class="num">383</td><td class="num">28.0%*</td><td class="num grp" colspan="2"><span class="badge-down">YoY 76%</span></td>
+      <td>26SS</td><td class="num">-0.7%</td><td class="num grp" colspan="2"><span class="badge-up">-12.8%p</span></td>
+      <td>전체</td><td class="num">7.8%</td><td class="num" style="color:#718096;">6.0%</td><td class="num"><span class="badge-up">+1.8%p</span></td>
+    </tr>
+    <tr style="background:#f0fff4;">
+      <td>라이선스/기타</td><td class="num">182</td><td class="num">100%</td><td class="num grp" colspan="2"><span class="badge-up">YoY 298%</span></td>
+      <td style="background:white;">CORE</td><td class="num" style="background:white;">-4.7%</td><td class="num grp" colspan="2" style="background:white;"><span class="badge-up">-10.5%p</span></td>
+      <td style="background:white;">Track Jacket</td><td class="num" style="background:white;">8.0%</td><td class="num" style="background:white;color:#718096;">6.3%</td><td class="num" style="background:white;"><span class="badge-up">+1.7%p</span></td>
+    </tr>
+    <tr>
+      <td>US EC</td><td class="num">130</td><td class="num">13.0%</td><td class="num grp" colspan="2"><span class="badge-down">YoY 39%</span></td>
+      <td>25FW</td><td class="num">48.7%</td><td class="num grp" colspan="2"><span class="badge-up">-2.6%p</span></td>
+      <td>Track Pant</td><td class="num">10.2%</td><td class="num" style="color:#718096;">5.9%</td><td class="num"><span class="badge-up">+4.3%p</span></td>
+    </tr>
+    <tr>
+      <td>US홀세일</td><td class="num">60</td><td class="num">45.9%</td><td class="num grp" colspan="2"><span class="badge-down">YoY 65%</span></td>
+      <td>25SS</td><td class="num">62.9%</td><td class="num grp" colspan="2"><span class="badge-down">+3.3%p</span></td>
+      <td>MU 평균</td><td class="num">5.4</td><td class="num" style="color:#718096;">5.5</td><td class="num"><span class="badge-warn">102%</span></td>
+    </tr>
+    <tr>
+      <td>EU EC</td><td class="num">8</td><td class="num">27.4%</td><td class="num grp" colspan="2"><span class="badge-down">YoY 57%</span></td>
+      <td>FW과시즌</td><td class="num">68.8%</td><td class="num grp" colspan="2"><span class="badge-down">+2.5%p</span></td>
+      <td>Track Pant MU</td><td class="num">5.9</td><td class="num" style="color:#718096;">5.5</td><td class="num"><span class="badge-up">+0.4</span></td>
+    </tr>
+    <tr>
+      <td colspan="5" class="grp" style="font-size:6.5px;color:#718096;padding-top:2px;">인원 27명(정규22,계약5) | 인당매출 50K(YoY 89%) | 인당영업비 26K(YoY 134%) | *직접이익률: 시스템보고 39%, 산식 28%</td>
+      <td>SS과시즌</td><td class="num">66.2%</td><td class="num grp" colspan="2"><span class="badge-up">-4.6%p</span></td>
+      <td>Short MU</td><td class="num">5.5</td><td class="num" style="color:#718096;">5.1</td><td class="num"><span class="badge-up">+0.4</span></td>
+    </tr>
+  </table>
+
+  <div style="font-size:6.5px;color:#718096;margin-top:2px;">라이선스 단독으로 직접이익 47% 기여 (182K/383K) — 본업(EC·홀세일) 수익성 의존도 분석 필요</div>
+
+  <hr class="divider">
+
+  <div class="page-title" id="sec3">3. 손익·비용 구조 (당월 vs 전년동월)</div>
+  <div class="container">
+    <div class="left">
+      <table>
+        <tr><th colspan="4" style="background:#f7fafc;font-size:8px;border-bottom:1.5px solid #2d3748;">💰 전사 손익 (K USD)</th></tr>
+        <tr><th>항목</th><th class="num">당월(4월)</th><th class="num">전년동월</th><th class="num">YoY</th></tr>
+        <tr><td>실판매출</td><td class="num">1,369</td><td class="num" style="color:#718096;">1,630</td><td class="num"><span class="badge-down">84%</span></td></tr>
+        <tr><td>할인율</td><td class="num">43.2%</td><td class="num" style="color:#718096;">36.8%</td><td class="num"><span class="badge-down">+6.4%p</span></td></tr>
+        <tr><td>직접이익</td><td class="num">383</td><td class="num" style="color:#718096;">504</td><td class="num"><span class="badge-down">76%</span></td></tr>
+        <tr><td>직접이익률(보고)</td><td class="num">28%</td><td class="num" style="color:#718096;">31.0%</td><td class="num"><span class="badge-down">-3.0%p</span></td></tr>
+        <tr style="background:#fff5f5;"><td>영업비</td><td class="num loss">703</td><td class="num" style="color:#718096;">567</td><td class="num"><span class="badge-down">124%▲</span></td></tr>
+        <tr><td>영업비율</td><td class="num">51.4%</td><td class="num" style="color:#718096;">34.8%</td><td class="num"><span class="badge-down">+16.6%p</span></td></tr>
+        <tr style="font-weight:bold;background:#fed7d7;"><td>영업이익</td><td class="num loss">-320 (적자)</td><td class="num loss" style="color:#c53030;">-63</td><td class="num"><span class="badge-down">적자확대</span></td></tr>
+      </table>
+      <div style="font-size:6.5px;color:#718096;margin-top:3px;">※ 전년동월 수치는 YoY 비율 역산 추정값 · 3월 영업이익 -24K → 4월 -320K MoM 적자 확대</div>
+    </div>
+    <div class="right">
+      <table>
+        <tr><th colspan="4" style="background:#f7fafc;font-size:8px;border-bottom:1.5px solid #2d3748;">💼 영업비 항목별 (K USD)</th></tr>
+        <tr><th>항목</th><th class="num">당월</th><th class="num">YoY</th><th>평가</th></tr>
+        <tr style="font-weight:bold;background:#f0f4f8;"><td>합계</td><td class="num">703</td><td class="num"><span class="badge-down">124%▲</span></td><td>증가</td></tr>
+        <tr><td>인건비</td><td class="num">538</td><td class="num"><span class="badge-down">149%</span></td><td>증가</td></tr>
+        <tr><td>&nbsp;└ 급여(정규/계약)</td><td class="num">290</td><td class="num"><span class="badge-neutral">100%</span></td><td>보합</td></tr>
+        <tr style="background:#fff5f5;"><td>&nbsp;└ 보험/복지비</td><td class="num loss">248</td><td class="num"><span class="badge-down">348%▲</span></td><td>급증</td></tr>
+        <tr><td>지급수수료</td><td class="num">82</td><td class="num"><span class="badge-up">93%</span></td><td>감소</td></tr>
+        <tr><td>임차료</td><td class="num">24</td><td class="num"><span class="badge-neutral">100%</span></td><td>보합</td></tr>
+        <tr><td>식대/출장비</td><td class="num">16</td><td class="num"><span class="badge-down">353%</span></td><td>증가</td></tr>
+        <tr><td>기타비용</td><td class="num">15</td><td class="num"><span class="badge-down">223%</span></td><td>증가</td></tr>
+        <tr><td>광고선전비</td><td class="num">13</td><td class="num"><span class="badge-up">26%</span></td><td>대폭절감</td></tr>
+        <tr><td>감가상각비</td><td class="num">8</td><td class="num"><span class="badge-neutral">100%</span></td><td>보합</td></tr>
+        <tr><td>샘플비/개발비</td><td class="num">3</td><td class="num"><span class="badge-up">16%</span></td><td>절감</td></tr>
+      </table>
+      <div style="font-size:6.5px;color:#718096;margin-top:3px;">복리후생비 248K(YoY 348%) — 영업비 증가의 핵심 요인 · 광고선전비 -74% 절감</div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="page-title" id="sec4">4. 재고 &amp; YTD 누적 현황</div>
+  <div class="container">
+    <div class="left">
+      <table>
+        <tr><th colspan="4" style="background:#f7fafc;font-size:8px;border-bottom:1.5px solid #2d3748;">📦 아이템별 기말재고 (K USD, 4월말)</th></tr>
+        <tr><th>아이템</th><th class="num">4월말</th><th class="num">전년동월</th><th class="num">YoY</th></tr>
+        <tr style="font-weight:bold;background:#f0f4f8;"><td>합계</td><td class="num">32,237</td><td class="num" style="color:#718096;">32,423</td><td class="num"><span class="badge-up">99%</span></td></tr>
+        <tr style="background:#ebf8ff;"><td>25FW</td><td class="num">13,177</td><td class="num" style="color:#718096;">4,908</td><td class="num"><span class="badge-down">268%▲</span></td></tr>
+        <tr><td>26SS</td><td class="num">12,675</td><td class="num" style="color:#718096;">24,370</td><td class="num"><span class="badge-up">52%</span></td></tr>
+        <tr><td>25SS</td><td class="num">4,734</td><td class="num" style="color:#718096;">1,158</td><td class="num"><span class="badge-down">409%▲</span></td></tr>
+        <tr><td>FW과시즌</td><td class="num">862</td><td class="num" style="color:#718096;">537</td><td class="num"><span class="badge-down">161%▲</span></td></tr>
+        <tr><td>CORE</td><td class="num">635</td><td class="num" style="color:#718096;">1,585</td><td class="num"><span class="badge-up">40%</span></td></tr>
+        <tr><td>SS과시즌</td><td class="num">155</td><td class="num" style="color:#718096;">66</td><td class="num"><span class="badge-down">236%▲</span></td></tr>
+      </table>
+      <div style="font-size:6.5px;color:#718096;margin-top:2px;">총재고 99% 전년수준 회복 · 단, 25FW·25SS 이월재고 지속 부담 (소진 가속 필요)</div>
+    </div>
+    <div class="right">
+      <table>
+        <tr><th colspan="5" style="background:#f7fafc;font-size:8px;border-bottom:1.5px solid #2d3748;">📊 채널별 YTD 직접이익 (1~4월 누적, K USD)</th></tr>
+        <tr><th>채널</th><th class="num">YTD 이익</th><th class="num">이익률</th><th class="num">전년대비</th></tr>
+        <tr style="font-weight:bold;background:#f0f4f8;"><td>합계 (산출)</td><td class="num">913</td><td class="num">—</td><td class="num">—</td></tr>
+        <tr><td>US EC</td><td class="num">527</td><td class="num">13.8%</td><td class="num"><span class="badge-down">-12.8%p</span></td></tr>
+        <tr><td>라이선스/기타</td><td class="num">233</td><td class="num">100%</td><td class="num"><span class="badge-neutral">±0%p</span></td></tr>
+        <tr><td>US홀세일</td><td class="num">161</td><td class="num">44.9%</td><td class="num"><span class="badge-down">-1.0%p</span></td></tr>
+        <tr style="background:#fff5f5;"><td>EU EC</td><td class="num loss">-8</td><td class="num loss">적자</td><td class="num"><span class="badge-down">-31.3%p</span></td></tr>
+      </table>
+      <div style="font-size:6.5px;color:#718096;margin-top:3px;margin-bottom:4px;">EU EC YTD 적자전환 — 채널 구조조정 검토 필요</div>
+      <div class="box-dark">
+        <div style="font-weight:bold;font-size:8.5px;margin-bottom:4px;">📌 핵심 YoY 지표 요약</div>
+        <table style="color:white;">
+          <tr>
+            <th style="background:rgba(255,255,255,.1);color:white;border-color:rgba(255,255,255,.2);">지표</th>
+            <th style="background:rgba(255,255,255,.1);color:white;border-color:rgba(255,255,255,.2);" class="num">당월</th>
+            <th style="background:rgba(255,255,255,.1);color:white;border-color:rgba(255,255,255,.2);" class="num">전년동월</th>
+            <th style="background:rgba(255,255,255,.1);color:white;border-color:rgba(255,255,255,.2);" class="num">YoY</th>
+          </tr>
+          <tr><td style="border-color:rgba(255,255,255,.1);">실판매출</td><td class="num" style="border-color:rgba(255,255,255,.1);">1,369K</td><td class="num" style="border-color:rgba(255,255,255,.1);">1,630K</td><td class="num" style="border-color:rgba(255,255,255,.1);">84%</td></tr>
+          <tr><td style="border-color:rgba(255,255,255,.1);">직접이익</td><td class="num" style="border-color:rgba(255,255,255,.1);">383K</td><td class="num" style="border-color:rgba(255,255,255,.1);">504K</td><td class="num" style="border-color:rgba(255,255,255,.1);">76%</td></tr>
+          <tr><td style="border-color:rgba(255,255,255,.1);color:#fc8181;">영업비</td><td class="num" style="border-color:rgba(255,255,255,.1);color:#fc8181;">703K</td><td class="num" style="border-color:rgba(255,255,255,.1);color:#fc8181;">567K</td><td class="num" style="border-color:rgba(255,255,255,.1);color:#fc8181;">124%▲</td></tr>
+          <tr><td style="border-color:rgba(255,255,255,.1);">할인율</td><td class="num" style="border-color:rgba(255,255,255,.1);">43.2%</td><td class="num" style="border-color:rgba(255,255,255,.1);">36.8%</td><td class="num" style="border-color:rgba(255,255,255,.1);">+6.4%p</td></tr>
+          <tr><td style="border-color:rgba(255,255,255,.1);">재고(K USD)</td><td class="num" style="border-color:rgba(255,255,255,.1);">32,237</td><td class="num" style="border-color:rgba(255,255,255,.1);">32,423</td><td class="num" style="border-color:rgba(255,255,255,.1);">99%</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <div class="page-title" id="sec5">5. 당월 추세 — 5월 1~9일 현황</div>
+  <div class="kpi-grid-4" style="margin-bottom:10px;">
+    <div class="kpi-box highlight">
+      <div class="kpi-label">기간 매출 (5/1~9)</div>
+      <div class="kpi-value" style="font-size:13px;">442K</div>
+      <div class="kpi-change" style="color:#2b6cb0;">9일 누적 (USD)</div>
+    </div>
+    <div class="kpi-box highlight">
+      <div class="kpi-label">월간 추정치</div>
+      <div class="kpi-value" style="font-size:13px;">2,074K</div>
+      <div class="kpi-change up">일 평균 × 30일 기준</div>
+    </div>
+    <div class="kpi-box highlight">
+      <div class="kpi-label">기간 YoY</div>
+      <div class="kpi-value" style="font-size:13px;up">151%</div>
+      <div class="kpi-change up">전년동기 대비 +51% 강세</div>
+    </div>
+    <div class="kpi-box warning">
+      <div class="kpi-label">기간 할인율</div>
+      <div class="kpi-value" style="font-size:13px;">44.4%</div>
+      <div class="kpi-change down">전년동기 +14.2%p 악화 ▲</div>
+    </div>
+  </div>
+
+  <div class="container" style="gap:10px;margin-bottom:10px;">
+    <div class="left">
+      <div class="chart-wrap">
+        <div class="chart-title">👕 Top 아이템 매출 &amp; YoY (5/1~9, USD)</div>
+        <canvas id="chartItems" height="190"></canvas>
+      </div>
+    </div>
+    <div class="right">
+      <div class="chart-wrap">
+        <div class="chart-title">🏷️ Top 아이템 할인율 vs 마진율 (%)</div>
+        <canvas id="chartDiscountMargin" height="190"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <table>
+      <tr><th colspan="7" style="background:#f7fafc;font-size:8px;border-bottom:1.5px solid #2d3748;">📋 시즌별 상세 데이터 (5/1~9) — 전년동기 비교</th></tr>
+      <tr><th>시즌</th><th class="num">매출(USD)</th><th class="num">비중</th><th class="num">할인율</th><th class="num">마진율</th><th class="num">YoY</th><th>평가</th></tr>
+      <tr><td><b>F25</b></td><td class="num">188,746</td><td class="num">42.7%</td><td class="num"><span class="badge-down">49.5%</span></td><td class="num">56.8%</td><td class="num"><span class="badge-up">234%</span></td><td>소진 가속</td></tr>
+      <tr style="background:#ebf8ff;"><td><b>S26</b></td><td class="num">140,824</td><td class="num">31.8%</td><td class="num"><span class="badge-up">10.2%</span></td><td class="num"><b>78.1%</b></td><td class="num"><span class="badge-warn">76%</span></td><td>정가 판매 유지</td></tr>
+      <tr><td>S25</td><td class="num">71,102</td><td class="num">16.1%</td><td class="num"><span class="badge-down">60.7%</span></td><td class="num">49.6%</td><td class="num"><span class="badge-up">462%</span></td><td>고할인 소진</td></tr>
+      <tr><td>F24</td><td class="num">19,429</td><td class="num">4.4%</td><td class="num"><span class="badge-down">64.7%</span></td><td class="num">28.2%</td><td class="num"><span class="badge-up">1,700%</span></td><td>극소 재고 처리</td></tr>
+      <tr style="background:#f0fff4;"><td><b>CORE</b></td><td class="num">18,928</td><td class="num">4.3%</td><td class="num"><span class="badge-up">-8.6%</span></td><td class="num"><b>81.0%</b></td><td class="num"><span class="badge-up">218%</span></td><td>최고 마진</td></tr>
+      <tr><td>S24</td><td class="num">2,811</td><td class="num">0.6%</td><td class="num"><span class="badge-down">71.4%</span></td><td class="num">14.3%</td><td class="num"><span class="badge-up">1,332%</span></td><td>잔여 처리</td></tr>
+      <tr><td>F23</td><td class="num">341</td><td class="num">0.1%</td><td class="num"><span class="badge-down">71.3%</span></td><td class="num">33.7%</td><td class="num"><span class="badge-up">207%</span></td><td>극미량 소진</td></tr>
+    </table>
+    <div style="font-size:6.5px;color:#718096;margin-top:3px;">5월 초 추세 매우 강세 — F25(이월재고) 소진과 S26(신상) 정가 판매 병행 · 월간 추정 2,074K은 4월(1,369K) 대비 MoM +51%</div>
+  </div>
+
+  <div class="footer">
+    F&amp;F · STO Brand Monthly Report · 2026년 4월 · 비교기준: 전년동월(YoY) · Confidential · 단위: K USD / 재고: K USD
+  </div>
+</div>
+
+<script>
+const COLORS={blue:'#4299e1',blueA:'rgba(66,153,225,0.75)',green:'#48bb78',greenA:'rgba(72,187,120,0.75)',red:'#fc8181',redA:'rgba(252,129,129,0.75)'};
+Chart.defaults.font={family:"'Malgun Gothic','Apple SD Gothic Neo',sans-serif",size:9};
+Chart.defaults.color='#4a5568';
+
+(function(){
+  const top8=[
+    {name:'TRACK JACKET',v:135741,yoy:282.9},
+    {name:'TRACK PANT',  v:105105,yoy:298.9},
+    {name:'SHORTS',      v:56320, yoy:97.9},
+    {name:'POLO',        v:39061, yoy:68.0},
+    {name:'T-SHIRT',     v:28412, yoy:121.7},
+    {name:'CABANA SHIRT',v:16507, yoy:223.2},
+    {name:'SWEATPANT',   v:8148,  yoy:0},
+    {name:'CREWNECK SW', v:5132,  yoy:0},
+  ];
+  new Chart(document.getElementById('chartItems'),{
+    type:'bar',
+    data:{labels:top8.map(d=>d.name),datasets:[{label:'매출(USD)',data:top8.map(d=>d.v),backgroundColor:top8.map(d=>d.yoy===0?'#a0aec0':(d.yoy>=100?COLORS.blueA:COLORS.redA)),borderRadius:3,borderSkipped:false}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:(ctx)=>{const d=top8[ctx.dataIndex];return[` ${d.v.toLocaleString()} USD`,d.yoy===0?' YoY: 신규':` YoY ${d.yoy.toFixed(1)}%`];}}}},
+      scales:{x:{grid:{color:'#edf2f7'},ticks:{font:{size:7.5},callback:v=>(v/1000).toFixed(0)+'K'}},y:{grid:{display:false},ticks:{font:{size:7.5}}}}},
+    plugins:[{id:'yoyLabels',afterDatasetsDraw(chart){
+      const{ctx,scales:{x,y}}=chart;ctx.save();
+      top8.forEach((d,i)=>{
+        const yPos=y.getPixelForValue(i),xPos=x.getPixelForValue(d.v);
+        let color,bg,label;
+        if(d.yoy===0){color='#4a5568';bg='rgba(226,232,240,0.9)';label='신규';}
+        else if(d.yoy>=100){color='#276749';bg='rgba(198,246,213,0.9)';label=`YoY ${d.yoy.toFixed(0)}%`;}
+        else{color='#c53030';bg='rgba(254,215,215,0.9)';label=`YoY ${d.yoy.toFixed(0)}%`;}
+        ctx.font='bold 7px sans-serif';
+        const w=ctx.measureText(label).width+6;
+        ctx.fillStyle=bg;ctx.beginPath();ctx.roundRect(xPos+4,yPos-7,w,13,2);ctx.fill();
+        ctx.fillStyle=color;ctx.fillText(label,xPos+7,yPos+3);
+      });ctx.restore();
+    }}]
+  });
+})();
+
+(function(){
+  const top8=[
+    {name:'TRACK JACKET',d:46.1,m:60.7},{name:'TRACK PANT',d:47.6,m:60.3},
+    {name:'SHORTS',d:39.5,m:64.2},{name:'POLO',d:34.1,m:66.7},
+    {name:'T-SHIRT',d:38.8,m:67.6},{name:'CABANA',d:29.0,m:69.3},
+    {name:'SWEATPANT',d:53.3,m:58.5},{name:'CREWNECK SW',d:44.7,m:63.9},
+  ];
+  new Chart(document.getElementById('chartDiscountMargin'),{
+    type:'bar',
+    data:{labels:top8.map(d=>d.name),datasets:[
+      {label:'할인율(%)',data:top8.map(d=>d.d),backgroundColor:COLORS.redA,borderRadius:3,borderSkipped:false},
+      {label:'마진율(%)',data:top8.map(d=>d.m),backgroundColor:COLORS.blueA,borderRadius:3,borderSkipped:false}
+    ]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:true,
+      plugins:{legend:{position:'bottom',labels:{font:{size:8},boxWidth:10,padding:6}},tooltip:{callbacks:{label:ctx=>` ${ctx.raw.toFixed(1)}%`}}},
+      scales:{x:{grid:{color:'#edf2f7'},max:100,ticks:{font:{size:7.5},callback:v=>v+'%'}},y:{grid:{display:false},ticks:{font:{size:7.5}}}}}
+  });
+})();
+</script>
+</body>
+</html>
